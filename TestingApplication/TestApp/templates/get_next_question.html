@@ -1,0 +1,50 @@
+<html>
+  <head>
+ <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  <div class="text-right">
+      <p>{{username}}</p>
+  </div>
+  <div>
+       <h1 class="text-center">Вопрос № {{num_of_question}}</h1>
+  </div>
+    <div>
+          <table class="table">
+
+              <thead>
+                <tr>
+                    {%for num in numbers_of_question %}
+                  <th scope="col"><a href="{% url 'get_next_question' num %}">{{num}}</a></th>
+                    {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+    </div>
+  <div class="text-center">
+      <h3>{{question.question}}</h3>
+  </div>
+  <div>
+      {% for answer in random_answers %}
+        <form method="get" action="{% url next_link %}">
+    <label>
+        <input type="checkbox" name="answers" value="forloop.counter"> ттт{{answer}}
+    </label><br>
+            {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+
+  </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<html>
+  <head>
+ <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1 class="text-center">Доступные тесты</h1>
+
+    <p class="text-center">Выберите тест для начала прохождения</p>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Название</th>
+      <th scope="col">Количество вопросов</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+   {%for test in tests %}
+    <tr>
+      <td>{{test.name}}</td>
+      <td>{{test.size_of_pages}}</td>
+      <td><a href="{% url 'do_pass_test' test.id %}" >Начать</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

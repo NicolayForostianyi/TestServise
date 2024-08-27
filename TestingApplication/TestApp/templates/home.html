@@ -1,0 +1,33 @@
+<html>
+  <head>
+ <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1 class="text-center">Сервис тестирования</h1>
+
+    <p class="text-center">Добро пожаловать в сервис тестирования!</p>
+     {% if user.is_authenticated %}
+                    <div class="text-center nav-item">
+                        <form id="logout" action="{% url 'logout' %}" method="POST">
+                              {% csrf_token %}
+                            <p>{{username}}</p>
+                                 <button class="btn btn-primary" type="submit" style="width: 200px; height: 50px; margin-top: 20px; margin-bottom: 20px;">logout</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="text-center ">
+                        <a class="btn btn-success" href="{% url 'login' %}" style="width: 200px; height: 50px; margin-top: 20px; margin-bottom: 20px;">Login</a>
+                    </div>
+                    <div class="text-center ">
+                        <a class="btn btn-info" href="{% url 'register' %}" style="width: 200px; height: 50px; margin-top: 20px; margin-bottom: 20px;">Register</a>
+                    </div>
+                {% endif %}
+    <div>
+        <a class="btn button-success" href="test_page">Страница тестов</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
