@@ -45,10 +45,11 @@ def do_pass_test(request, id_of_test):
     test = Test.objects.get(pk=id_of_test)
     size_of_questions = test.questions.count if test.questions.count() < test.size_of_pages else test.size_of_pages
     rand_num_of_question = [random.randint(0, size_of_questions-1) for i in range(size_of_questions)]
-    print(rand_num_of_question)
+    print("1 шаг")
     # Сформировал список рандомных запросов
     questions = test.questions.all()
-    questions_data = [i.id for i in questions]
+    questions_data = serialize('json',questions)
+    print("2 шаг")
     # Получение вариантов ответа с правильными
     answer_options = get_answer_options_for_question(questions)
     answer_options_data = serialize_answer_option(answer_options)
@@ -57,6 +58,7 @@ def do_pass_test(request, id_of_test):
     request.session['questions'] = [questions_data]
     request.session['answer_options']=answer_options_data
     request.session['test'] =json.loads(serialize('json', [test]))
+    request.session['len_of_questions']=test.questions.count()
     request.session['current_question']=0
     request.session['numbers_of_questions']=[i for i in  range(test.questions.count())]
     request.session['answers_of_questions']=[[] for _ in range(test.questions.count())]
@@ -78,14 +80,16 @@ def get_next_question (request, num_of_question):
     current_question = request.session.get('current_question')
     numbers_or_questions =request.session['numbers_of_questions']
     answers_of_questions =request.session['answers_of_questions']
-    question_data = request.session.get("questions")
-    print("question_data = ", question_data)
-    # Десериализация массива JSON в список сериализованных объектов
-    questions = Question.objects.filter(id__in=question_data)
-    question = questions[num_of_question]
-    random_answers = request.session.get("answer_options")[num_of_question][2]
-    if num_of_question+1<len(request.session.get("questions")):
-        next_link = "get_next_question"+str(num_of_question+1)
+    question_data = json.loads(request.session.get("questions")[0])
+    dict_string =question_data[num_of_question]
+    print("current_question =", dict_string)
+    question =Question.objects.get(pk=dict_string.get("pk"))
+    # Так как десериализация пошла не так как надо решил сделать просто через id
+    random_answers = request.session.get("answer_options")[num_of_question][1]
+    # random_answers =[json.loads(i) for i in random_answers]
+    random_answers = [Answer.objects.get(pk=i.get("pk")) for i in random_answers]
+    if num_of_question+1<request.session.get("len_of_questions"):
+        next_link = "get_next_question"
         next_link_name = "Вопрос "+str(num_of_question+1)
     else:
         next_link = "end_test"
@@ -146,10 +150,8 @@ def get_answer_options_for_question(questions):
         # Отсекаем все правильные ответы
         other_answers = question.answer_options.exclude(id__in=[i.id for i in right_answer]).all()
         random_answers = list(right_answer)+list(other_answers)
-        print("random_answers =", random_answers)
         random.shuffle(random_answers)
-        print("random_answers =", random_answers)
-        answer_options.append([right_answer, other_answers, random_answers])
+        answer_options.append([right_answer, random_answers])
     return answer_options
 
 
@@ -166,6 +168,5 @@ def serialize_answer_option(answer_options):
     for answer_option in answer_options:
         right_answers=json.loads(serialize('json', answer_option[0]))
         other_answers=json.loads(serialize('json', answer_option[1]))
-        random_answers=json.loads(serialize('json', answer_option[2]))
-        result.append([right_answers,other_answers,random_answers])
+        result.append([right_answers,other_answers])
     return result
