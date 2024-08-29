@@ -77,6 +77,7 @@ def get_next_question (request, num_of_question):
     if request.session.get("answer_options") is None:
         print("get_next_qestion answer_options is None")
     selected_indices = request.GET.getlist('answers')
+    print("selected_indicec = ", selected_indices)
     current_question = request.session.get('current_question')
     numbers_or_questions =request.session['numbers_of_questions']
     answers_of_questions =request.session['answers_of_questions']
@@ -90,15 +91,17 @@ def get_next_question (request, num_of_question):
     random_answers = [Answer.objects.get(pk=i.get("pk")) for i in random_answers]
     if num_of_question+1<request.session.get("len_of_questions"):
         next_link = "get_next_question"
+        next_question = str(num_of_question+1)
         next_link_name = "Вопрос "+str(num_of_question+1)
     else:
         next_link = "end_test"
+        next_question = None # Не работает
         next_link_name = "Завершить тест"
     print("next_link = ",next_link)
     request.session['current_question'] = num_of_question
-    request.session["answers_of_questions"][current_question] = [i.id for i in selected_indices]
+    request.session["answers_of_questions"][current_question] = [int(i) for i in selected_indices]
     context= {"next_link": next_link, "num_of_question": num_of_question, "numbers_of_question": numbers_or_questions,"answers_of_questions":answers_of_questions,
-              "question": question, "random_answers": random_answers,
+              "question": question, "random_answers": random_answers,'next_question':next_question,
               'selected_answers': request.session["answers_of_questions"][num_of_question]}
     return render(request, 'get_next_question.html', context)
 

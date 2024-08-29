@@ -30,9 +30,9 @@
   </div>
   <div>
       {% for answer in random_answers %}
-        <form method="get" action="{% url next_link %}">
+        <form method="get" action="{% url next_link next_question %}">
     <label>
-        <input type="checkbox" name="answers" value="forloop.counter"> {{answer}}
+        <input type="checkbox" name="answers" value="{{answer.id}}"> {{answer}}
     </label><br>
             {% endfor %}
     <button type="submit">Submit</button>
