@@ -29,13 +29,18 @@
       <h3>{{question.question}}</h3>
   </div>
   <div>
+      {% if is_not_next_question %}
+      <form method="get" action="{% url next_link next_question %}">
+      {% endif %}
+      {% if not is_not_next_question %}
+      <form method="get" action="{% url 'end_test' %}">
+      {% endif %}
       {% for answer in random_answers %}
-        <form method="get" action="{% url next_link next_question %}">
     <label>
         <input type="checkbox" name="answers" value="{{answer.id}}"> {{answer}}
     </label><br>
             {% endfor %}
-    <button type="submit">Submit</button>
+    <button type="submit">{{next_link_name}}</button>
 </form>
 
   </div>

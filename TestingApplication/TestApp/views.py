@@ -53,7 +53,7 @@ def do_pass_test(request, id_of_test):
     # Получение вариантов ответа с правильными
     answer_options = get_answer_options_for_question(questions)
     answer_options_data = serialize_answer_option(answer_options)
-    context = {"test": test, "questions": questions, "size_of_questions": size_of_questions,"username":get_username(request)}
+    context = {"test": test, "questions": questions, "size_of_questions": size_of_questions,"username":get_username(request),"is_not_next_question":True}
     request.session['answers'] = []
     request.session['questions'] = [questions_data]
     request.session['answer_options']=answer_options_data
@@ -77,14 +77,13 @@ def get_next_question (request, num_of_question):
     if request.session.get("answer_options") is None:
         print("get_next_qestion answer_options is None")
     selected_indices = request.GET.getlist('answers')
-    print("selected_indicec = ", selected_indices)
     current_question = request.session.get('current_question')
     numbers_or_questions =request.session['numbers_of_questions']
     answers_of_questions =request.session['answers_of_questions']
     question_data = json.loads(request.session.get("questions")[0])
     dict_string =question_data[num_of_question]
-    print("current_question =", dict_string)
     question =Question.objects.get(pk=dict_string.get("pk"))
+    request.session['current_question'] = question
     # Так как десериализация пошла не так как надо решил сделать просто через id
     random_answers = request.session.get("answer_options")[num_of_question][1]
     # random_answers =[json.loads(i) for i in random_answers]
@@ -93,15 +92,19 @@ def get_next_question (request, num_of_question):
         next_link = "get_next_question"
         next_question = str(num_of_question+1)
         next_link_name = "Вопрос "+str(num_of_question+1)
+        is_not_next_question = True
     else:
         next_link = "end_test"
         next_question = None # Не работает
         next_link_name = "Завершить тест"
-    print("next_link = ",next_link)
+        is_not_next_question = False
+
     request.session['current_question'] = num_of_question
     request.session["answers_of_questions"][current_question] = [int(i) for i in selected_indices]
-    context= {"next_link": next_link, "num_of_question": num_of_question, "numbers_of_question": numbers_or_questions,"answers_of_questions":answers_of_questions,
+    context= {"next_link": next_link, "num_of_question": num_of_question, "numbers_of_question": numbers_or_questions,
+              "answers_of_questions":answers_of_questions,"is_not_next_question":is_not_next_question ,
               "question": question, "random_answers": random_answers,'next_question':next_question,
+              "next_link_name":next_link_name,
               'selected_answers': request.session["answers_of_questions"][num_of_question]}
     return render(request, 'get_next_question.html', context)
 
@@ -110,23 +113,22 @@ def end_test(request):
     selected_indices = request.GET.getlist('answers')
     current_question = request.session.get('current_question')
     request.session["answers_of_questions"][current_question] = selected_indices
-    answers_of_questions = request.session.get('answer_of_question')
+    answers_of_questions = request.session.get('answers_of_questions')
+    answers_of_questions = [[Answer.objects.get(pk = j) for j in i] for i in answers_of_questions]
     answer_options = request.session.get("answer_options")
+    answer_options = [[[Answer.objects.get(pk = (k).get('pk'))for k in j] for j in i]for i in answer_options]
     right_answers = []
     incorrect_answers= []
     for i, answer_option in enumerate(answer_options):
-        random_ans = answer_option[2]
         right_ans = answer_option[0]
-        current_ans = [random_ans[int (j)] for j in answers_of_questions[i]]
-        count_r= 0
-        count_f=0
-        for k in current_ans:
-            if k.id in right_ans:
-                count_r+=1
-            else:
-                count_f+=1
-        right_answers.append(count_r)
-        incorrect_answers.append(count_f)
+        res = []
+        for r in right_ans:
+            if r in answers_of_questions[i]:
+                res.append(r)
+        right_ans = res
+        len_of_answers= len(answer_options[1])
+        right_answers.append(len(right_ans))
+        incorrect_answers.append(len_of_answers-len(right_ans))
     context={"right_answers":right_answers, "incorrect_answers":incorrect_answers, "username":get_username(request)}
     return render(request, 'end_test', context)
 
@@ -171,5 +173,5 @@ def serialize_answer_option(answer_options):
     for answer_option in answer_options:
         right_answers=json.loads(serialize('json', answer_option[0]))
         other_answers=json.loads(serialize('json', answer_option[1]))
-        result.append([right_answers,other_answers])
+        result.append([[right_answers],[other_answers]])
     return result
