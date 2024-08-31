@@ -38,7 +38,10 @@
       {% endif %}
       {% for answer in random_answers %}
     <label>
-        <input type="checkbox" name="answers" value="{{answer.id}}"> {{answer}}
+        <input type="checkbox"
+            name="answers"
+            value="{{ answer.id }}"
+            {% if answer.is_checked %} checked {% endif %}>  {{answer.answer}}
     </label><br>
             {% endfor %}
     <button type="submit">{{next_link_name}}</button>

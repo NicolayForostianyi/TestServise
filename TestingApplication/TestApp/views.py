@@ -76,6 +76,16 @@ def get_next_question(request, num_of_question):
     random_answers = request.session.get("answer_options")[num_of_question][1]
     # random_answers =[json.loads(i) for i in random_answers]
     random_answers = [Answer.objects.get(pk=i.get("pk")) for i in random_answers]
+    current_answers = request.session["answers_of_questions"][num_of_question]
+    random_answers =random_answers = [
+        {
+            'id': answer.id,
+            'answer': answer.answer,
+            'is_checked': True if answer.id in current_answers else False
+        }
+        for answer in random_answers
+    ]
+    print("random_answers = ", random_answers)
     if num_of_question + 1 < request.session.get("len_of_questions"):
         next_link = "get_next_question"
         next_question = str(num_of_question + 1)
