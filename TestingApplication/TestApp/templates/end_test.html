@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block title_of_page %}
+<div>
+       <h1 class="text-center">Тест закончен</h1>
+  </div>
+
+{% endblock %}
+{% block subtitle_of_page %}
+<div><p class="text-center">Результат тестирования:</p></div>
+{% endblock %}
+{% block content %}
+    <div style="width:60%;">
+          <table class="table" >
+
+              <thead>
+                <tr>
+                    <th scope="col">№</th>
+                  <th scope="col">Количество правильных ответов</th>
+                    <th scope="col">Количество неправильных ответов</th>
+                  <th scope="col">результирующий балл</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for result_answer in result_answers%}
+                <tr>
+                    <td>{{result_answer.number}}</td>
+                    <td>{{result_answer.right_answer}}</td>
+                    <td>{{result_answer.incorrect_answer}}</td>
+                    <td>{{result_answer.result_ball}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <p>Итоговый балл : {{total_ball}}</p>
+    </div>
+{% endblock %}
+
+
+

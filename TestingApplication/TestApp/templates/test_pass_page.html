@@ -5,28 +5,26 @@
 
 {% block title_of_page %}
    <div>
-        <h1 class="text-center">Доступные тесты</h1>
+        <h1 class="text-center">Пройденные тесты</h1>
     </div>
 {% endblock %}
-{% block subtitle_of_page %}
-<p class="text-center">Выберите тест для начала прохождения</p>
-{% endblock %}
+
 {% block content %}
     <div style="width:60%">
             <table class="table">
   <thead>
     <tr>
-      <th scope="col">Название</th>
-      <th scope="col">Количество вопросов</th>
-      <th scope="col"></th>
+      <th scope="col">Название теста</th>
+      <th scope="col">Дата и время выполнения</th>
+        <th scope="col">Результат</th>
     </tr>
   </thead>
   <tbody>
    {%for test in tests %}
     <tr>
-      <td>{{test.name}}</td>
-      <td>{{test.size_of_pages}}</td>
-      <td><a class="btn btn-success" href="{% url 'do_pass_test' test.id %}" >Начать</a></td>
+      <td>{{test.test.name}}</td>
+        <td>{{test.datetime}}</td>
+      <td>{{test.result_ball}}</td>
     </tr>
   {% endfor %}
   </tbody>

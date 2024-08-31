@@ -1,15 +1,16 @@
-<html>
-  <head>
- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-  <div class="text-right">
-      <p>{{username}}</p>
-  </div>
-  <div>
+{% extends "base.html" %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block title_of_page %}
+    <div>
        <h1 class="text-center">Вопрос № {{num_of_question}}</h1>
   </div>
-    <div>
+{% endblock %}
+
+{% block content %}
+    <div style="width:60%;">
+            <div>
           <table class="table">
 
               <thead>
@@ -41,9 +42,14 @@
     </label><br>
             {% endfor %}
     <button type="submit">{{next_link_name}}</button>
-</form>
+    </form>
+</div>
+    </div>
+{% endblock %}
 
-  </div>
+
+
+
 
 
 

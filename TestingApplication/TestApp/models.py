@@ -1,5 +1,5 @@
 import uuid
-
+import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -57,9 +57,9 @@ class Test(models.Model):
 
 
 class TestPass(models.Model):
-    id = models.BigIntegerField( verbose_name='id для составного ключа', primary_key=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
     test = models.ForeignKey(Test, on_delete=models.PROTECT, verbose_name="Тест")
+    datetime = models.DateTimeField(default=datetime.datetime.now(), verbose_name="Дата выполнения теста" )
     result_ball = models.FloatField(verbose_name="Оценка")
 
     class Meta:

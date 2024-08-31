@@ -14,5 +14,6 @@ urlpatterns = [
     path('do_pass_test/<int:id_of_test>/', do_pass_test, name='do_pass_test'),  # Добавлен слэш
     path('get_next_question/<int:num_of_question>/', get_next_question, name='get_next_question'),
     path('end_test/', end_test, name='end_test'),
+    path('test_pass_page/', test_pass_page, name='test_pass_page'),
     path('', home, name='home'),
 ]
