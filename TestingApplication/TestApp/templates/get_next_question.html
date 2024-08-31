@@ -31,10 +31,10 @@
   </div>
   <div>
       {% if is_not_next_question %}
-      <form method="get" action="{% url next_link next_question %}">
+      <form method="get" action="{% url next_link next_question %}" onsubmit="validateForm(event)">
       {% endif %}
       {% if not is_not_next_question %}
-      <form method="get" action="{% url 'end_test' %}">
+      <form method="get" action="{% url 'end_test' %}" onsubmit="validateForm(event)">
       {% endif %}
       {% for answer in random_answers %}
     <label>

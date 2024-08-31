@@ -45,13 +45,8 @@ def test_page(request):
 def do_pass_test(request, id_of_test):
     test = Test.objects.get(pk=id_of_test)
     size_of_questions = test.questions.count if test.questions.count() < test.size_of_pages else test.size_of_pages
-    rand_num_of_question = [random.randint(0, size_of_questions - 1) for i in range(size_of_questions)]
-    print("1 шаг")
-    # Сформировал список рандомных запросов
     questions = test.questions.all()
     questions_data = serialize('json', questions)
-    print("2 шаг")
-    # Получение вариантов ответа с правильными
     answer_options = get_answer_options_for_question(questions)
     answer_options_data = serialize_answer_option(answer_options)
     context = {"test": test, "questions": questions, "size_of_questions": size_of_questions,
@@ -70,7 +65,6 @@ def do_pass_test(request, id_of_test):
 @login_required
 def get_next_question(request, num_of_question):
     selected_indices = request.GET.getlist('answers')
-    print("selected_indices = ", selected_indices)
     current_question = request.session.get('current_question')
     numbers_or_questions = request.session['numbers_of_questions']
     answers_of_questions = request.session['answers_of_questions']
@@ -118,7 +112,6 @@ def end_test(request):
     result_answers = []
     for i, answer_option in enumerate(answer_options):
         right_ans = answer_option[0]
-        print("answers_of_questions[", i, "]=", answers_of_questions[i])
         inc_answers = []
         res = []
         for r in answers_of_questions[i]:
@@ -132,6 +125,7 @@ def end_test(request):
         result_answer.incorrect_answer = len(inc_answers)
         result_ball = result_answer.right_answer - result_answer.incorrect_answer
         result_answer.result_ball = result_ball
+        result_answer.percent_of_right_answers = len(right_ans)/len(answer_option[0])*100
         result_answer.number = i
         result_answers.append(result_answer)
     total_ball = sum(i.result_ball for i in result_answers)
