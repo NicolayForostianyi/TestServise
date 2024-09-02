@@ -2,10 +2,12 @@
 # entrypoint.sh
 
 # Выполнение миграций
-python manage.py migrate
+python TestingApplication/manage.py migrate
 
 # Создание суперпользователя с предопределенными данными
-python manage.py create_superuser
+python TestingApplication/manage.py create_superuser
 
-# Запуск приложения
-exec gunicorn TestingApplication.wsgi:application --bind localhost:8000
+
+python TestingApplication/manage.py runserver 0.0.0.0:8000
+
+

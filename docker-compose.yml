@@ -11,10 +11,10 @@ services:
       - db_data:/var/lib/postgresql/data
 
   web:
-    build: .
+    build: ./TestingApplication
     command: >
       sh -c "python manage.py migrate &&
-             gunicorn TestingApplication.wsgi:application --bind localhostм:8000"
+             gunicorn TestingApplication.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:

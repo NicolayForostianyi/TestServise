@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-urx1-6emii3pu+ul$$6y13dm6tndg9)k#b9go#d69*q8l3^vq4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 LOGIN_REDIRECT_URL = 'home'
-ALLOWED_HOSTS = []
 LOGOUT_REDIRECT_URL = "login"
 
 # Application definition
@@ -81,12 +80,12 @@ DATABASES = {
         'NAME': 'testing_application',
         'USER': 'postgres',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
 
-
+ALLOWED_HOSTS = ['*']
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
